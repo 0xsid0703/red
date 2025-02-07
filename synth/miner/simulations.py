@@ -1,3 +1,5 @@
+import bittensor as bt
+
 from synth.miner.price_simulation import (
     simulate_crypto_price_paths,
     get_asset_price,
@@ -5,7 +7,6 @@ from synth.miner.price_simulation import (
 from synth.utils.helpers import (
     convert_prices_to_time_format,
 )
-
 
 def generate_simulations(
     asset="BTC",
@@ -31,18 +32,19 @@ def generate_simulations(
         raise ValueError("Start time must be provided.")
 
     current_price = get_asset_price(asset)
+    bt.logging.info(
+        f"Fetched current price: {current_price} for asset: {asset}"
+    )
     if current_price is None:
         raise ValueError(f"Failed to fetch current price for asset: {asset}")
 
     # Standard deviation of the simulated price path
-    sigma = 0.01
 
     simulations = simulate_crypto_price_paths(
         current_price=current_price,
         time_increment=time_increment,
         time_length=time_length,
         num_simulations=num_simulations,
-        sigma=sigma,
     )
 
     predictions = convert_prices_to_time_format(

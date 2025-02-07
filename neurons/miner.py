@@ -59,13 +59,16 @@ class Miner(BaseMinerNeuron):
         bt.logging.info(
             f"Received prediction request from: {synapse.dendrite.hotkey} for timestamp: {simulation_input.start_time}"
         )
-
+        starttime = time.time()
         dt = simulation_input.start_time
         asset = simulation_input.asset
         time_increment = simulation_input.time_increment
         time_length = simulation_input.time_length
         num_simulations = simulation_input.num_simulations
-
+        endtime = time.time()
+        bt.logging.info(
+            f"Synapse: Start Time: {dt},  Asset: {asset}, Time Increment: {time_increment}, Time Length: {time_length}, Number of Simulations: {num_simulations}"
+        )
         prediction = generate_simulations(
             start_time=dt,
             asset=asset,
@@ -75,7 +78,9 @@ class Miner(BaseMinerNeuron):
         )
 
         synapse.simulation_output = prediction
-
+        bt.logging.info(
+            f"Successfully replied synapse:  Length: {len(prediction)} predictions({len(prediction[0])}) for timestamp: {endtime - starttime}s"
+        )
         return synapse
 
     async def blacklist(self, synapse: Simulation) -> typing.Tuple[bool, str]:
